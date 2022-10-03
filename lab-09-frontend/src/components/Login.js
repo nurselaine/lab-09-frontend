@@ -15,7 +15,7 @@ export default function Login() {
   const [userObject, setUserObject] = useState({});
   const [userActive, setUserActive] = useState(false);
   const [joke, setJoke] = useState('');
-  const [affirm, setAffirm] = useState([]);
+  const [affirm, setAffirm] = useState('');
   const [library, setLibrary] = useState([]);
 
   const handleSignUp = async () => {
@@ -40,9 +40,9 @@ export default function Login() {
       // const token = `${username}:${password}`;
       // const encodedToken = Buffer.from(token).toString('base64');
       // const headers = { 'Authorization': 'Basic '+ encodedToken };
-      let response = await axios.post(`http://localhost:3001/signin`,{},
+      let response = await axios.post(`http://localhost:3001/signin`, {},
         {
-            auth: {username, password},   
+          auth: { username, password },
         });
       setUserActive(true);
       setUserObject(response.data);
@@ -56,11 +56,11 @@ export default function Login() {
   const getJoke = async () => {
     try {
       const response = await axios.get(`https://v2.jokeapi.dev/joke/Programming,Dark,Pun,Spooky?type=twopart`,
-      {
-        headers: {
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response);
       setJoke(response.data)
     } catch (e) {
@@ -70,15 +70,15 @@ export default function Login() {
 
   const addJoke = async () => {
     try {
-      const response = await axios.post(`http://localhost:3001/jokes`,{
+      const response = await axios.post(`http://localhost:3001/jokes`, {
         setup: joke.setup,
         delivery: joke.delivery,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response);
       setJoke(response.data)
     } catch (e) {
@@ -90,11 +90,11 @@ export default function Login() {
     try {
       console.log(userObject.token);
       const response = await axios.get(`http://localhost:3001/jokes`,
-      {
-        headers: {
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response);
       setLibrary(response.data)
     } catch (e) {
@@ -105,12 +105,12 @@ export default function Login() {
   const getAffirm = async () => {
     try {
       const response = await axios.get(`https://dulce-affirmations-api.herokuapp.com/affirmation`, {},
-      {
-        headers: {
-          // "access-control-allow-origin" : "*",
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            // "access-control-allow-origin" : "*",
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response.data[0]);
       setAffirm(response.data[0])
     } catch (e) {
@@ -120,14 +120,14 @@ export default function Login() {
 
   const addAffirm = async () => {
     try {
-      const response = await axios.post(`http://localhost:3001/affirmations`,{
+      const response = await axios.post(`http://localhost:3001/affirmations`, {
         affirmation: affirm.phrase,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response);
       setJoke(response.data)
     } catch (e) {
@@ -139,11 +139,11 @@ export default function Login() {
     try {
       console.log(userObject.token);
       const response = await axios.get(`http://localhost:3001/affirmations`,
-      {
-        headers: {
-          Authorization: `Bearer ${userObject.token}`,
-        }
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${userObject.token}`,
+          }
+        });
       console.log(response);
       setLibrary(response.data)
     } catch (e) {
@@ -153,45 +153,52 @@ export default function Login() {
 
 
   return (
-    <>
+    <main>
       {userActive
         ?
-        <div className="catergory-cont">
-          {/* two big buttons | smile(affirmations) or laugh(jokes) */}
-          <div onClick={getJoke} className="catergory">
-            Laugh
-            {
-              joke 
-                ? <>
-                    <div>
+        <div className="center-div">
+          <div className="catergory-cont">
+            {/* two big buttons | smile(affirmations) or laugh(jokes) */}
+            <div onClick={getJoke} className="catergory">
+              <div className="category-title">Laugh</div>
+              {
+                joke
+                  ? <>
+                    <div className="content">
                       <p>{joke.setup}</p>
                       <p>{joke.delivery}</p>
                       <button onClick={getJoke}>new joke</button>
                       <button onClick={addJoke}>Add to library</button>
                       <button onClick={getAllJokes}>View Library</button>
                     </div>
-                  </> 
-                : ''
-            }
-          </div>
-          <div onClick={getAffirm} className="catergory">
-            Smile
-            {
-              affirm.length 
-                ? <>
-                    <div>
+                  </>
+                  : <p className="clickme">click me!</p>
+              }
+            </div>
+            <div onClick={getAffirm} className="catergory">
+              <div className="category-title">Smile</div>
+              {
+                affirm
+                  ? <>
+                    <div className="content">
                       <p>{affirm.phrase}</p>
                       <button onClick={getAffirm}>new Affirmation</button>
                       <button onClick={addAffirm}>Add to library</button>
                       <button onClick={getAllAffirms}>View Library</button>
                     </div>
-                  </> 
-                : ''
-            }
+                  </>
+                  : <p className="clickme">click me!</p>
+              }
+            </div>
           </div>
+          {library.length !== 0 
+        ? <Library 
+            data={library}
+          /> 
+        : ''}
         </div>
         :
-        <>
+        <div className="form">
           <Form.Group className="mb-3">
             <Form.Label>Username</Form.Label>
             <Form.Control onChange={(e) => setUsername(e.target.value)} placeholder="Type your Username" />
@@ -207,15 +214,10 @@ export default function Login() {
               <option>admin</option>
             </Form.Select>
           </Form.Group>
-          <Button onClick={handleSignUp}>Sign Up</Button>
-          <Button onClick={handleSignIn}>Sign In</Button>
-        </>
+          <button onClick={handleSignUp}>Sign Up</button>
+          <button onClick={handleSignIn}>Sign In</button>
+        </div>
       }
-      {library.length !== 0 
-        ? <Library 
-            data={library}
-          /> 
-        : ''}
-    </>
+    </main>
   )
 }
